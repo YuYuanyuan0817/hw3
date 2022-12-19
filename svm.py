@@ -42,10 +42,12 @@ def train_svc (X_train, y_train):
     # Train the model
     clf.fit(X_train, y_train)
     
-    save_model(dir='model1/conf/svm.pkl',model=clf)
+    save_model(dir='model/conf/svm.pkl',model=clf)
     
 
     return clf
+
+
 
 
 df = get_data('https://raw.githubusercontent.com/5x12/ml-cookbook/master/supplements/data/heart.csv')
@@ -54,6 +56,33 @@ clf = train_svc (X_train, y_train)
 
 logging.info(f'Accuracy is {clf.score(X_test,y_test)}')
 
-clf = load_model('model1/conf/svc.pkl')
+#Hyperparameters Tuning
 
-logging.info(f'Prediction is {clf.predict(X_test)}')
+for this_gamma in [0.001, 0.01, 0.1]:
+    
+    for this_C in [0.1, 1, 15]:
+        
+        #initialize a model
+        clf = SVC(gamma=this_gamma, C = this_C)
+        
+        #fit the model
+        clf.fit(X_train, y_train)
+        logging.info(f'SVM with gamma = {this_gamma} & C = {this_C}')
+        logging.info(f'Accuracy is {clf.score(X_train,y_train)}')
+        logging.info(f'Accuracy is {clf.score(X_test,y_test)}')
+
+
+#Making a prediction
+
+def predict2 (values):
+    clf = load_model('model/conf/svm.pkl')
+    return clf.predict2(values)
+
+
+
+
+responce = predict2(X_test)
+
+clf = load_model('model/conf/svm.pkl')
+
+logging.info(f'Prediction is {clf.predict2(X_test)}')
